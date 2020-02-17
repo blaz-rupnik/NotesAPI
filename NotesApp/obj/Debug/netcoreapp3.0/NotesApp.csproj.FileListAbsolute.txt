@@ -1,0 +1,9 @@
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\bin\Debug\netcoreapp3.0\appsettings.Development.json
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\bin\Debug\netcoreapp3.0\appsettings.json
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\bin\Debug\netcoreapp3.0\Properties\launchSettings.json
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\obj\Debug\netcoreapp3.0\NotesApp.csprojAssemblyReference.cache
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\obj\Debug\netcoreapp3.0\staticwebassets\NotesApp.StaticWebAssets.Manifest.cache
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\obj\Debug\netcoreapp3.0\staticwebassets\NotesApp.StaticWebAssets.xml
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\obj\Debug\netcoreapp3.0\NotesApp.AssemblyInfoInputs.cache
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\obj\Debug\netcoreapp3.0\NotesApp.AssemblyInfo.cs
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\obj\Debug\netcoreapp3.0\NotesApp.RazorTargetAssemblyInfo.cache
