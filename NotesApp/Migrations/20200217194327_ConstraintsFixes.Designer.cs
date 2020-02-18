@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NotesApp.Persistence;
 
 namespace NotesApp.Migrations
 {
     [DbContext(typeof(NotesDbContext))]
-    partial class NotesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200217194327_ConstraintsFixes")]
+    partial class ConstraintsFixes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,15 +73,7 @@ namespace NotesApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<byte[]>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<byte[]>("PasswordSalt")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("Username")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
@@ -91,7 +85,7 @@ namespace NotesApp.Migrations
 
             modelBuilder.Entity("NotesApp.Models.Folder", b =>
                 {
-                    b.HasOne("NotesApp.Models.User", "User")
+                    b.HasOne("NotesApp.Models.User", null)
                         .WithMany("Folders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -100,7 +94,7 @@ namespace NotesApp.Migrations
 
             modelBuilder.Entity("NotesApp.Models.Note", b =>
                 {
-                    b.HasOne("NotesApp.Models.Folder", "Folder")
+                    b.HasOne("NotesApp.Models.Folder", null)
                         .WithMany("Notes")
                         .HasForeignKey("FolderId")
                         .OnDelete(DeleteBehavior.Cascade)

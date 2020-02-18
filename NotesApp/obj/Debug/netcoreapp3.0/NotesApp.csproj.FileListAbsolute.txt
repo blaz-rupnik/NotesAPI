@@ -50,5 +50,16 @@ C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\obj\Debug\netcoreap
 C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\obj\Debug\netcoreapp3.0\NotesApp.dll
 C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\obj\Debug\netcoreapp3.0\NotesApp.pdb
 C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\bin\Debug\netcoreapp3.0\Microsoft.EntityFrameworkCore.Design.dll
-C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\obj\Debug\netcoreapp3.0\NotesApp.csprojAssemblyReference.cache
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\bin\Debug\netcoreapp3.0\AutoMapper.dll
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\bin\Debug\netcoreapp3.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\bin\Debug\netcoreapp3.0\Microsoft.DotNet.InternalAbstractions.dll
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\bin\Debug\netcoreapp3.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\bin\Debug\netcoreapp3.0\Newtonsoft.Json.dll
 C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\obj\Debug\netcoreapp3.0\NotesApp.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\bin\Debug\netcoreapp3.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\bin\Debug\netcoreapp3.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\bin\Debug\netcoreapp3.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\bin\Debug\netcoreapp3.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\bin\Debug\netcoreapp3.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\bin\Debug\netcoreapp3.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\bin\Debug\netcoreapp3.0\System.IdentityModel.Tokens.Jwt.dll
