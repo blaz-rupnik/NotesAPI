@@ -47,13 +47,13 @@ namespace NotesApp.Services
         {
             var dbNote = _context.Notes.Find(note.Id);
 
-            if (note == null)
+            if (dbNote == null)
                 throw new DomainException("Note not found.");
 
             //update changes
             dbNote.Content = note.Content;
 
-            _context.Notes.Update(note);
+            _context.Notes.Update(dbNote);
             _context.SaveChanges();
         }
 

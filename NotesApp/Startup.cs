@@ -79,6 +79,8 @@ namespace NotesApp
 
             //business logic
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<INoteService, NoteService>();
+            services.AddScoped<IFolderService, FolderService>(); 
 
             services.AddControllers();
         }

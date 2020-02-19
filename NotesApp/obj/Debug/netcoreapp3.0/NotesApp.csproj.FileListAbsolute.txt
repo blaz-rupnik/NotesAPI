@@ -63,3 +63,4 @@ C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\bin\Debug\netcoreap
 C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\bin\Debug\netcoreapp3.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\bin\Debug\netcoreapp3.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\bin\Debug\netcoreapp3.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\obj\Debug\netcoreapp3.0\NotesApp.csprojAssemblyReference.cache
