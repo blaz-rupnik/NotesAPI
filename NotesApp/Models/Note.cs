@@ -13,7 +13,7 @@ namespace NotesApp.Models
         public string Name { get; set; }
         public string Content { get; set; }
         public bool IsShared { get; set; }
-        public Guid NoteTypeId { get; set; }
+        public Guid? NoteTypeId { get; set; }
         public Guid UserId { get; set; }
         public Guid? FolderId { get; set; }
     }

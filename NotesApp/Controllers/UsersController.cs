@@ -7,7 +7,6 @@ using Microsoft.IdentityModel.Tokens;
 using NotesApp.Controllers.Resources;
 using NotesApp.Helpers;
 using NotesApp.Models;
-using NotesApp.Persistence;
 using NotesApp.Services;
 using System;
 using System.Collections.Generic;

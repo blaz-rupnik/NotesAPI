@@ -3,7 +3,6 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using NotesApp.Helpers;
 using NotesApp.Models;
-using NotesApp.Persistence;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -22,12 +21,10 @@ namespace NotesApp.Services
 
     public class UserService : IUserService
     {
-        private NotesDbContext _context;
         private readonly IConfiguration _config;
 
-        public UserService(NotesDbContext context, IConfiguration config)
+        public UserService(IConfiguration config)
         {
-            _context = context;
             _config = config;
         }
 
@@ -70,7 +67,7 @@ namespace NotesApp.Services
             {
                 string query = "SELECT Id, PasswordHash, PasswordSalt, Username FROM Users WHERE Username = @UsernameParam";
                 conn.Open();
-                var result = await conn.QueryAsync<User>(query, new { @UsernameParam = username });
+                var result = await conn.QueryAsync<User>(query, new { UsernameParam = username });
                 var user = result.FirstOrDefault();
 
                 if (user == null || !VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
@@ -104,9 +101,9 @@ namespace NotesApp.Services
                 
                 await conn.QueryAsync<User>(query, new { 
                     IdParam = user.Id,
-                    @HashParam = user.PasswordHash,
-                    @SaltParam = user.PasswordSalt,
-                    @UsernameParam = user.Username });
+                    HashParam = user.PasswordHash,
+                    SaltParam = user.PasswordSalt,
+                    UsernameParam = user.Username });
                 return user;
             }
         }

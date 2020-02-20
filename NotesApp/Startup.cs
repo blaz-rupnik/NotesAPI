@@ -15,7 +15,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using NotesApp.Helpers;
-using NotesApp.Persistence;
 using NotesApp.Services;
 
 namespace NotesApp
@@ -34,8 +33,6 @@ namespace NotesApp
         {
             //automapper
             services.AddAutoMapper();
-
-            services.AddDbContext<NotesDbContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:Default"]));
 
             //authentication
             var appSettingsConfig = Configuration.GetSection("AppSettings");

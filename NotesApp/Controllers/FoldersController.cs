@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NotesApp.Controllers.Resources;
 using NotesApp.Models;
 using NotesApp.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace NotesApp.Controllers
@@ -26,46 +23,40 @@ namespace NotesApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var folder = _folderService.GetAll();
-            var model = _mapper.Map<FolderResource>(folder);
-
-            return Ok(model);
+            var folders = await _folderService.GetAll();
+            return Ok(folders);
         }
 
-        //[HttpGet("{id}")]
-        //public IActionResult GetById(Guid id)
-        //{
-        //    try
-        //    {
-        //        var folder = _folderService.GetById(id);
-        //        var model = _mapper.Map<Folder, FolderResource>(folder);
-
-        //        return Ok(model);
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        return BadRequest(ex);
-        //    }
-        //}
-
-        [HttpPost]
-        public IActionResult Create([FromBody] FolderResource model)
-        {
-            var folder = _folderService.Create(_mapper.Map<FolderResource, Folder>(model));
-            var result = _mapper.Map<Folder, FolderResource>(folder);
-            return Ok(result);
-        }
-
-        [HttpPut("{id}")]
-        public IActionResult Update(Guid id, [FromBody] FolderResource model)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
         {
             try
             {
-                //var updatedFolder = _folderService.Update(id, _mapper.Map<FolderResource, Folder>(model), User.Identity.Name);
-                //var result = _mapper.Map<Folder, FolderResource>(updatedFolder);
-                return Ok();
+                var folder = await _folderService.GetById(id, User.Identity.Name);
+                return Ok(folder);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] Folder model)
+        {
+            var folder = await _folderService.Create(model);
+            return Ok(folder);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] Folder model)
+        {
+            try
+            {
+                var updatedFolder = await _folderService.Update(id, model, User.Identity.Name);
+                return Ok(updatedFolder);
             }
             catch (UnauthorizedAccessException)
             {
@@ -73,18 +64,18 @@ namespace NotesApp.Controllers
             }
         }
 
-        //[HttpDelete("{id}")]
-        //public IActionResult Delete(Guid id)
-        //{
-        //    try
-        //    {
-        //        _folderService.Delete(id, User.Identity.Name);
-        //        return Ok();
-        //    }
-        //    catch (UnauthorizedAccessException)
-        //    {
-        //        return Unauthorized();
-        //    }
-        //}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            try
+            {
+                await _folderService.Delete(id, User.Identity.Name);
+                return Ok();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
+        }
     }
 }

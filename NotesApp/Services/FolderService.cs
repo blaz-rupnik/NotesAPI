@@ -1,8 +1,11 @@
-﻿using NotesApp.Helpers;
+﻿using Dapper;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using NotesApp.Helpers;
 using NotesApp.Models;
-using NotesApp.Persistence;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,63 +13,128 @@ namespace NotesApp.Services
 {
     public interface IFolderService
     {
-        IEnumerable<Folder> GetAll();
-        Folder GetById(Guid id, string principalName);
-        Folder Create(Folder folder);
-        //void Update(Guid id, Folder folder, string principalName);
-        //void Delete(Guid id, string principalName);
+        Task<IEnumerable<Folder>> GetAll();
+        Task<Folder> GetById(Guid id, string principalName);
+        Task<Folder> Create(Folder folder);
+        Task<Folder> Update(Guid id, Folder folder, string principalName);
+        Task Delete(Guid id, string principalName);
     }
 
     public class FolderService : IFolderService
     {
-        private NotesDbContext _context;
+        private readonly IConfiguration _config;
 
-        public FolderService(NotesDbContext context)
+        public FolderService(IConfiguration config)
         {
-            _context = context;
+            _config = config;
         }
 
-        public IEnumerable<Folder> GetAll()
+        public IDbConnection Connection
         {
-            return _context.Folders;
+            get
+            {
+                return new SqlConnection(_config.GetConnectionString("Default"));
+            }
         }
 
-        public Folder GetById(Guid id, string principalName)
+        public async Task<IEnumerable<Folder>> GetAll()
         {
-            return _context.Folders.Find(id);
+            using (IDbConnection conn = Connection)
+            {
+                string query = "SELECT Id, Name, UserId FROM Folders";
+                conn.Open();
+                var result = await conn.QueryAsync<Folder>(query);
+                return result;
+            }
         }
 
-        public Folder Create(Folder folder)
+        public async Task<Folder> GetById(Guid id, string principalName)
         {
-            _context.Folders.Add(folder);
-            _context.SaveChanges();
+            using (IDbConnection conn = Connection)
+            {
+                string query = "SELECT Id, Name, UserId FROM Folders WHERE Id = @ID";
+                conn.Open();
+                var result = await conn.QueryAsync<Folder>(query, new { ID = id });
+                var folder = result.FirstOrDefault();
 
-            return folder;
+                Guid.TryParse(principalName, out Guid userId);
+
+                if (userId == folder.UserId)
+                    return folder;
+                else
+                {
+                    throw new UnauthorizedAccessException();
+                }
+            }
         }
 
-        public void Update(Folder folder)
+        public async Task<Folder> Create(Folder folder)
         {
-            var dbFolder = _context.Folders.Find(folder.Id);
+            using (IDbConnection conn = Connection)
+            {
+                conn.Open();
+                string query = "INSERT INTO Folders (Id, Name, UserId) values (" +
+                    "@IdParam, @NameParam, @UserIdParam)";
+
+                folder.Id = Guid.NewGuid();
+                await conn.QueryAsync<Folder>(query, new
+                {
+                    IdParam = folder.Id,
+                    NameParam = folder.Name,
+                    UserIdParam = folder.UserId
+                });
+
+                return folder;
+            }
+        }
+
+        public async Task<Folder> Update(Guid id, Folder folder, string principalName)
+        {
+            var dbFolder = await GetById(id, principalName);
 
             if (dbFolder == null)
-                throw new DomainException("Folder not found");
+                throw new DomainException("Folder not found.");
 
             //update changes
-            dbFolder.Name = folder.Name;
+            using (IDbConnection conn = Connection)
+            {
+                conn.Open();
+                string query = "UPDATE Folders SET Name = @NameParam WHERE Id = @IdParam";
+                await conn.QueryAsync<Folder>(query, new
+                {
+                    IdParam = dbFolder.Id,
+                    NameParam = !String.IsNullOrEmpty(folder.Name) ? folder.Name : dbFolder.Name
+                });
 
-            _context.Folders.Update(dbFolder);
-            _context.SaveChanges();
+                folder.Id = dbFolder.Id;
+                return folder;
+            }
         }
 
-        public void Delete(Guid id)
+        public async Task Delete(Guid id, string principalName)
         {
-            var folder = _context.Folders.Find(id);
+            var dbFolder = await GetById(id, principalName);
 
-            if(folder != null)
+            if (dbFolder == null)
+                throw new DomainException("Folder not found.");
+
+            using (IDbConnection conn = Connection)
             {
-                //TODO: Also remove notes inside folder!
-                _context.Folders.Remove(folder);
-                _context.SaveChanges();
+                conn.Open();
+
+                //delete notes that are inside this folder
+                string noteQuery = "DELETE FROM Notes WHERE FolderId = @FolderIdParam";
+                await conn.QueryAsync<Folder>(noteQuery, new
+                {
+                    FolderIdParam = id
+                });
+
+                //delete folder
+                string query = "DELETE FROM Folders WHERE Id = @IdParam";
+                await conn.QueryAsync<Note>(query, new
+                {
+                    IdParam = id
+                });
             }
         }
     }

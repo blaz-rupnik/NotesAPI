@@ -1,12 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NotesApp.Controllers.Resources;
 using NotesApp.Models;
 using NotesApp.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace NotesApp.Controllers
@@ -26,23 +23,20 @@ namespace NotesApp.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var notes = _noteService.GetAll();
-            var model = _mapper.Map<NoteResource>(notes);
-            return Ok(model);
+            var folders = await _noteService.GetAll();
+            return Ok(folders);
         }
 
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             try
             {
-                var note = _noteService.GetById(id, User.Identity.IsAuthenticated, User.Identity.Name);
-                var model = _mapper.Map<NoteResource>(note);
-
-                return Ok(model);
+                var note = await _noteService.GetById(id, User.Identity.IsAuthenticated, User.Identity.Name);
+                return Ok(note);
             }
             catch(UnauthorizedAccessException)
             {
@@ -51,23 +45,19 @@ namespace NotesApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] NoteResource model)
+        public async Task<IActionResult> Create([FromBody] Note model)
         {
-            var note = _mapper.Map<NoteResource, Note>(model);
-
-            note = _noteService.Create(note);
-            var result = _mapper.Map<Note, NoteResource>(note);
-            return Ok(result);
+            var note = await _noteService.Create(model);
+            return Ok(note);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(Guid id, [FromBody] NoteResource model)
+        public async Task<IActionResult> Update(Guid id, [FromBody] Note model)
         {
             try
             {
-                var updatedNote = _noteService.Update(id, _mapper.Map<NoteResource, Note>(model), User.Identity.Name);
-                var result = _mapper.Map<Note, NoteResource>(updatedNote);
-                return Ok(result);
+                var updatedNote = await _noteService.Update(id, model, User.Identity.Name);
+                return Ok(updatedNote);
             }
             catch (UnauthorizedAccessException)
             {
@@ -76,11 +66,11 @@ namespace NotesApp.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             try
             {
-                _noteService.Delete(id,User.Identity.Name);
+                await _noteService.Delete(id,User.Identity.Name);
                 return Ok();
             }
             catch (UnauthorizedAccessException)
