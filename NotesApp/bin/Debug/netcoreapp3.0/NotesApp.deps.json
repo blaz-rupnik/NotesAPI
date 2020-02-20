@@ -26,6 +26,7 @@
         "dependencies": {
           "AutoMapper": "7.0.1",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "1.2.0",
+          "Dapper": "2.0.30",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "3.0.0",
           "Microsoft.EntityFrameworkCore.SqlServer": "3.1.1",
           "Microsoft.EntityFrameworkCore.Tools": "3.1.1",
@@ -334,6 +335,20 @@
         },
         "compile": {
           "lib/netstandard1.6/AutoMapper.Extensions.Microsoft.DependencyInjection.dll": {}
+        }
+      },
+      "Dapper/2.0.30": {
+        "dependencies": {
+          "System.Reflection.Emit.Lightweight": "4.6.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Dapper.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.30.32292"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Dapper.dll": {}
         }
       },
       "Microsoft.AspNetCore.Authentication.JwtBearer/3.0.0": {
@@ -1234,7 +1249,7 @@
           "System.Reflection": "4.3.0",
           "System.Reflection.Emit": "4.3.0",
           "System.Reflection.Emit.ILGeneration": "4.3.0",
-          "System.Reflection.Emit.Lightweight": "4.3.0",
+          "System.Reflection.Emit.Lightweight": "4.6.0",
           "System.Reflection.Extensions": "4.3.0",
           "System.Reflection.Primitives": "4.3.0",
           "System.Reflection.TypeExtensions": "4.3.0",
@@ -1330,7 +1345,7 @@
           "System.Linq": "4.3.0",
           "System.Reflection": "4.3.0",
           "System.Reflection.Emit.ILGeneration": "4.3.0",
-          "System.Reflection.Emit.Lightweight": "4.3.0",
+          "System.Reflection.Emit.Lightweight": "4.6.0",
           "System.Reflection.Extensions": "4.3.0",
           "System.Reflection.Primitives": "4.3.0",
           "System.Reflection.TypeExtensions": "4.3.0",
@@ -1374,14 +1389,7 @@
           "System.Runtime": "4.3.0"
         }
       },
-      "System.Reflection.Emit.Lightweight/4.3.0": {
-        "dependencies": {
-          "System.Reflection": "4.3.0",
-          "System.Reflection.Emit.ILGeneration": "4.3.0",
-          "System.Reflection.Primitives": "4.3.0",
-          "System.Runtime": "4.3.0"
-        }
-      },
+      "System.Reflection.Emit.Lightweight/4.6.0": {},
       "System.Reflection.Extensions/4.3.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "2.0.0",
@@ -3420,6 +3428,13 @@
       "path": "automapper.extensions.microsoft.dependencyinjection/1.2.0",
       "hashPath": "automapper.extensions.microsoft.dependencyinjection.1.2.0.nupkg.sha512"
     },
+    "Dapper/2.0.30": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-nL0VEpvunjIQ3jTI1x27b7BS3BnRnn5b2vhxsU2pWEd9SljF5WUQLoV/83qXTm0yaHmejRV/ndI3EApGlrgPqw==",
+      "path": "dapper/2.0.30",
+      "hashPath": "dapper.2.0.30.nupkg.sha512"
+    },
     "Microsoft.AspNetCore.Authentication.JwtBearer/3.0.0": {
       "type": "package",
       "serviceable": true,
@@ -4015,12 +4030,12 @@
       "path": "system.reflection.emit.ilgeneration/4.3.0",
       "hashPath": "system.reflection.emit.ilgeneration.4.3.0.nupkg.sha512"
     },
-    "System.Reflection.Emit.Lightweight/4.3.0": {
+    "System.Reflection.Emit.Lightweight/4.6.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-oadVHGSMsTmZsAF864QYN1t1QzZjIcuKU3l2S9cZOwDdDueNTrqq1yRj7koFfIGEnKpt6NjpL3rOzRhs4ryOgA==",
-      "path": "system.reflection.emit.lightweight/4.3.0",
-      "hashPath": "system.reflection.emit.lightweight.4.3.0.nupkg.sha512"
+      "sha512": "sha512-j/V5HVvxvBQ7uubYD0PptQW2KGsi1Pc2kZ9yfwLixv3ADdjL/4M78KyC5e+ymW612DY8ZE4PFoZmWpoNmN2mqg==",
+      "path": "system.reflection.emit.lightweight/4.6.0",
+      "hashPath": "system.reflection.emit.lightweight.4.6.0.nupkg.sha512"
     },
     "System.Reflection.Extensions/4.3.0": {
       "type": "package",

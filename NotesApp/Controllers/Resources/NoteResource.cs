@@ -13,5 +13,6 @@ namespace NotesApp.Controllers.Resources
         public Guid NoteTypeId { get; set; }
         public Guid? FolderId { get; set; }
         public Guid UserId { get; set; }
+        public bool IsShared { get; set; }
     }
 }

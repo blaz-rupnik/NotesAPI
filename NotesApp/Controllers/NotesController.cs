@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NotesApp.Controllers.Resources;
+using NotesApp.Models;
 using NotesApp.Services;
 using System;
 using System.Collections.Generic;
@@ -32,13 +33,60 @@ namespace NotesApp.Controllers
             return Ok(model);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public IActionResult GetById(Guid id)
         {
-            var note = _noteService.GetById(id);
-            var model = _mapper.Map<NoteResource>(note);
+            try
+            {
+                var note = _noteService.GetById(id, User.Identity.IsAuthenticated, User.Identity.Name);
+                var model = _mapper.Map<NoteResource>(note);
 
-            return Ok(model);
+                return Ok(model);
+            }
+            catch(UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
+        }
+
+        [HttpPost]
+        public IActionResult Create([FromBody] NoteResource model)
+        {
+            var note = _mapper.Map<NoteResource, Note>(model);
+
+            note = _noteService.Create(note);
+            var result = _mapper.Map<Note, NoteResource>(note);
+            return Ok(result);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Update(Guid id, [FromBody] NoteResource model)
+        {
+            try
+            {
+                var updatedNote = _noteService.Update(id, _mapper.Map<NoteResource, Note>(model), User.Identity.Name);
+                var result = _mapper.Map<Note, NoteResource>(updatedNote);
+                return Ok(result);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(Guid id)
+        {
+            try
+            {
+                _noteService.Delete(id,User.Identity.Name);
+                return Ok();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
         }
     }
 }

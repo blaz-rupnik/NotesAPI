@@ -40,13 +40,13 @@ namespace NotesApp.Controllers
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public IActionResult Register([FromBody] UserAuthenticateResource model)
+        public async Task<IActionResult> Register([FromBody] UserAuthenticateResource model)
         {
             var user = _mapper.Map<User>(model);
 
             try
             {
-                _userService.Create(user, model.Password);
+                await _userService.Create(user, model.Password);
                 return Ok();
             }
             catch(DomainException ex)
@@ -58,9 +58,9 @@ namespace NotesApp.Controllers
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody] UserAuthenticateResource model)
+        public async Task<IActionResult> Authenticate([FromBody] UserAuthenticateResource model)
         {
-            var user = _userService.Authenticate(model.Username, model.Password);
+            var user = await _userService.Authenticate(model.Username, model.Password);
 
             if (user == null)
                 return BadRequest(new { msg = "Username or password is incorrect" });
@@ -88,10 +88,18 @@ namespace NotesApp.Controllers
             });
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
-            var user = _userService.GetById(id);
+            var users = await _userService.GetAll();
+            var result = _mapper.Map<IEnumerable<UserResource>>(users);
+            return Ok(result);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var user = await _userService.GetById(id);
             var model = _mapper.Map<UserResource>(user);
             return Ok(model);
         }

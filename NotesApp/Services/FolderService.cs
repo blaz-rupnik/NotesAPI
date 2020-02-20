@@ -11,10 +11,10 @@ namespace NotesApp.Services
     public interface IFolderService
     {
         IEnumerable<Folder> GetAll();
-        Folder GetById(Guid id);
+        Folder GetById(Guid id, string principalName);
         Folder Create(Folder folder);
-        void Update(Folder folder);
-        void Delete(Guid id);
+        //void Update(Guid id, Folder folder, string principalName);
+        //void Delete(Guid id, string principalName);
     }
 
     public class FolderService : IFolderService
@@ -31,7 +31,7 @@ namespace NotesApp.Services
             return _context.Folders;
         }
 
-        public Folder GetById(Guid id)
+        public Folder GetById(Guid id, string principalName)
         {
             return _context.Folders.Find(id);
         }

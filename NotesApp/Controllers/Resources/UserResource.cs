@@ -11,10 +11,5 @@ namespace NotesApp.Controllers.Resources
     {
         public Guid Id { get; set; }
         public string Username { get; set; }
-        public ICollection<FolderResource> Folders { get; set; }
-        public UserResource()
-        {
-            Folders = new Collection<FolderResource>();
-        }
     }
 }

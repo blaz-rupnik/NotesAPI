@@ -11,6 +11,7 @@ namespace NotesApp.Controllers.Resources
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public Guid UserId { get; set; }
         public ICollection<NoteResource> Notes { get; set; }
         public FolderResource()
         {

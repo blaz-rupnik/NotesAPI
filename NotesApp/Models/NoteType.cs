@@ -9,9 +9,6 @@ namespace NotesApp.Models
     public class NoteType
     {
         public Guid Id { get; set; }
-
-        [Required]
-        [StringLength(255)]
         public string TypeName { get; set; }
     }
 }

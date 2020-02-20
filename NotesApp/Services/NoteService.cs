@@ -11,10 +11,10 @@ namespace NotesApp.Services
     public interface INoteService
     {
         IEnumerable<Note> GetAll();
-        Note GetById(Guid id);
+        Note GetById(Guid id, bool isAuthenticate, string principalName);
         Note Create(Note note);
-        void Update(Note note);
-        void Delete(Guid id);
+        Note Update(Guid id, Note note, string principalName);
+        void Delete(Guid id, string principalName);
     }
     public class NoteService : INoteService
     {
@@ -30,9 +30,18 @@ namespace NotesApp.Services
             return _context.Notes;
         }
 
-        public Note GetById(Guid id)
+        public Note GetById(Guid id, bool isAuthenticated, string principalName)
         {
-            return _context.Notes.Find(id);
+            var note = _context.Notes.Find(id);
+
+            Guid.TryParse(principalName, out Guid userId);
+
+            if (note.IsShared || userId == note.UserId)
+                return note;
+            else
+            {
+                throw new UnauthorizedAccessException();
+            }
         }
 
         public Note Create(Note note)
@@ -43,27 +52,49 @@ namespace NotesApp.Services
             return note;
         }
 
-        public void Update(Note note)
+        public Note Update(Guid id, Note note, string principalName)
         {
-            var dbNote = _context.Notes.Find(note.Id);
+            var dbNote = _context.Notes.Find(id);
 
             if (dbNote == null)
                 throw new DomainException("Note not found.");
 
+            CheckIfModifyingOwnNote(dbNote.UserId, principalName);
+
             //update changes
             dbNote.Content = note.Content;
+            dbNote.IsShared = note.IsShared;
+            dbNote.Name = note.Name;
+            dbNote.NoteTypeId = note.NoteTypeId;
 
             _context.Notes.Update(dbNote);
             _context.SaveChanges();
+
+            return dbNote;
         }
 
-        public void Delete(Guid id)
+        public void Delete(Guid id, string principalName)
         {
             var note = _context.Notes.Find(id);
-            if(note != null)
+          
+            if (note != null)
             {
+                //security
+                CheckIfModifyingOwnNote(note.UserId, principalName);
+
                 _context.Notes.Remove(note);
                 _context.SaveChanges();
+            }else
+            {
+                throw new DomainException("Note not found");
+            }
+        }
+
+        private void CheckIfModifyingOwnNote(Guid noteUserId, string principalName)
+        {
+            if(!Guid.TryParse(principalName, out Guid userId) && noteUserId != userId)
+            {
+                throw new UnauthorizedAccessException();
             }
         }
     }
