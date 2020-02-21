@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NotesApp.Controllers.Resources;
 using NotesApp.Models;
 using NotesApp.Services;
 using System;
@@ -22,10 +23,11 @@ namespace NotesApp.Controllers
             this._noteService = noteService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] NoteQuery query)
         {
-            var folders = await _noteService.GetAll();
+            var folders = await _noteService.GetAll(query, User.Identity.IsAuthenticated);
             return Ok(folders);
         }
 

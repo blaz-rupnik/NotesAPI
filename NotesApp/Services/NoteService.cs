@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using NotesApp.Controllers.Resources;
 using NotesApp.Helpers;
 using NotesApp.Models;
 using System;
@@ -13,7 +14,7 @@ namespace NotesApp.Services
 {
     public interface INoteService
     {
-        Task<IEnumerable<Note>> GetAll();
+        Task<IEnumerable<Note>> GetAll(NoteQuery query, bool isAuthenticated);
         Task<Note> GetById(Guid id, bool isAuthenticate, string principalName);
         Task<Note> Create(Note note);
         Task<Note> Update(Guid id, Note note, string principalName);
@@ -36,13 +37,77 @@ namespace NotesApp.Services
             }
         }
 
-        public async Task<IEnumerable<Note>> GetAll()
+        public async Task<IEnumerable<Note>> GetAll(NoteQuery query, bool isAuthenticated)
         {
             using (IDbConnection conn = Connection)
             {
-                string query = "SELECT Id, Name, Content, FolderId, IsShared, NoteTypeId, UserId FROM Notes";
                 conn.Open();
-                var result = await conn.QueryAsync<Note>(query);
+
+                string queryDb = "SELECT Id, Name, Content, FolderId, IsShared, NoteTypeId, UserId FROM Notes";
+
+                bool whereIncluded = false;
+                if(query.IsShared != null)
+                {
+                    queryDb += " WHERE IsShared = @IsSharedParam";
+                    whereIncluded = true;
+                }
+                if(query.FolderId != null)
+                {
+                    if (whereIncluded)
+                    {
+                        queryDb += " AND FolderId = @FolderIdParam";
+                    }
+                    else
+                    {
+                        queryDb += " WHERE FolderId = @FolderIdParam";
+                        whereIncluded = true;
+                    }
+                }
+                if(!String.IsNullOrEmpty(query.Content))
+                {
+                    if(whereIncluded)
+                    {
+                        queryDb += " AND Content like CONCAT('%',@ContentParam,'%')";
+                    }else
+                    {
+                        queryDb += " WHERE Content like CONCAT('%',@ContentParam,'%')";
+                    }
+                }
+
+                bool isSorted = false;
+                if(!String.IsNullOrEmpty(query.SortBy))
+                {
+                    if (query.SortBy.ToLower() == "isshared")
+                    {
+                        queryDb += " ORDER BY IsShared";
+                        queryDb = query.IsSortAscending ? queryDb : (queryDb += " DESC");
+                        isSorted = true;
+                    }
+                    else if(query.SortBy.ToLower() == "name")
+                    {
+                        queryDb += " ORDER BY Name";
+                        queryDb = query.IsSortAscending ? queryDb : (queryDb += " DESC");
+                        isSorted = true;
+                    }
+                }
+
+                if(query.Page != null && query.PageSize != null)
+                {
+                    if (!isSorted)
+                    {
+                        //need to add sort because offset requires order by clause
+                        queryDb += " ORDER BY Name";
+                    }
+                    queryDb += " OFFSET @PageSizeParam * (@PageParam - 1) ROWS FETCH NEXT @PageSizeParam ROWS ONLY";
+                }
+
+                var result = await conn.QueryAsync<Note>(queryDb, new { 
+                    PageSizeParam = query.PageSize,
+                    PageParam = query.Page,
+                    FolderIdParam = query.FolderId,
+                    IsSharedParam = query.IsShared,
+                    ContentParam = query.Content
+                });
                 return result;
             }
         }
