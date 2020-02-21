@@ -1,0 +1,1 @@
+dotnet publish ./NotesAPI -c Release -o ./bin/Docker

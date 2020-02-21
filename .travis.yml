@@ -1,0 +1,17 @@
+language: csharp
+mono: none
+sudo: required
+dotnet: 3.0.0
+solution: ./NotesApp.sln
+install:
+  - sudo apt-get install -qq dotnet-sdk-2.0.0
+before_script:
+  - chmod -R a+x ./NotesAPI/dotnet-build.sh
+  - chmod -R a+x ./NotesAPI/dotnet-publish.sh
+script:
+  - ./NotesAPI/dotnet-build.sh
+  - ./NotesAPI/dotnet-publish.sh
+notifications:
+  email:
+    on_success: never
+    on_failure: never  
