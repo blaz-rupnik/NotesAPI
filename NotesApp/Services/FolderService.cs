@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Configuration;
+using NotesApp.Controllers.QueryParams;
 using NotesApp.Helpers;
 using NotesApp.Models;
 using System;
@@ -13,7 +14,7 @@ namespace NotesApp.Services
 {
     public interface IFolderService
     {
-        Task<IEnumerable<Folder>> GetAll();
+        Task<IEnumerable<Folder>> GetAll(FolderQuery query);
         Task<Folder> GetById(Guid id, string principalName);
         Task<Folder> Create(Folder folder);
         Task<Folder> Update(Guid id, Folder folder, string principalName);
@@ -37,13 +38,37 @@ namespace NotesApp.Services
             }
         }
 
-        public async Task<IEnumerable<Folder>> GetAll()
+        public async Task<IEnumerable<Folder>> GetAll(FolderQuery query)
         {
             using (IDbConnection conn = Connection)
             {
-                string query = "SELECT Id, Name, UserId FROM Folders";
                 conn.Open();
-                var result = await conn.QueryAsync<Folder>(query);
+                string dbQuery = "SELECT Id, Name, UserId FROM Folders";
+
+                //filtering
+                if (query.Name != null)
+                    dbQuery += QueryBuildExtensions.AppendFilter("Name", true, true);
+
+                //sorting
+                var isSorted = false;
+                if(!String.IsNullOrEmpty(query.SortBy) && query.SortBy.ToLower() == "name")
+                {
+                    dbQuery += QueryBuildExtensions.AppendSort(query.SortBy, query.IsSortAscending);
+                    isSorted = true;
+                }
+
+                //paging
+                if(query.Page != null && query.PageSize != null)
+                {
+                    dbQuery += QueryBuildExtensions.AppendPaging(isSorted, "Name");
+                }
+
+                
+                var result = await conn.QueryAsync<Folder>(dbQuery, new { 
+                    NameParam = query.Name,
+                    PageParam = query.Page,
+                    PageSizeParam = query.PageSize
+                });
                 return result;
             }
         }

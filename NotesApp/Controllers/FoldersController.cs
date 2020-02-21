@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NotesApp.Controllers.QueryParams;
 using NotesApp.Models;
 using NotesApp.Services;
 using System;
@@ -20,9 +21,9 @@ namespace NotesApp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] FolderQuery query)
         {
-            var folders = await _folderService.GetAll();
+            var folders = await _folderService.GetAll(query);
             return Ok(folders);
         }
 

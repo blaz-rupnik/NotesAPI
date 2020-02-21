@@ -45,60 +45,34 @@ namespace NotesApp.Services
 
                 string queryDb = "SELECT Id, Name, Content, FolderId, IsShared, NoteTypeId, UserId FROM Notes";
 
+                //filtering
                 bool whereIncluded = false;
                 if(query.IsShared != null)
                 {
-                    queryDb += " WHERE IsShared = @IsSharedParam";
+                    queryDb += QueryBuildExtensions.AppendFilter("IsShared", false, whereIncluded);
                     whereIncluded = true;
                 }
                 if(query.FolderId != null)
                 {
-                    if (whereIncluded)
-                    {
-                        queryDb += " AND FolderId = @FolderIdParam";
-                    }
-                    else
-                    {
-                        queryDb += " WHERE FolderId = @FolderIdParam";
-                        whereIncluded = true;
-                    }
+                    queryDb += QueryBuildExtensions.AppendFilter("FolderId", false, whereIncluded);
+                    whereIncluded = true;
                 }
-                if(!String.IsNullOrEmpty(query.Content))
-                {
-                    if(whereIncluded)
-                    {
-                        queryDb += " AND Content like CONCAT('%',@ContentParam,'%')";
-                    }else
-                    {
-                        queryDb += " WHERE Content like CONCAT('%',@ContentParam,'%')";
-                    }
-                }
+                if (!String.IsNullOrEmpty(query.Content))
+                    queryDb += QueryBuildExtensions.AppendFilter("Content", true, whereIncluded);
 
+                //sorting
                 bool isSorted = false;
-                if(!String.IsNullOrEmpty(query.SortBy))
+                if(!String.IsNullOrEmpty(query.SortBy) && (query.SortBy.ToLower() == "isshared" || 
+                    query.SortBy.ToLower() == "name"))
                 {
-                    if (query.SortBy.ToLower() == "isshared")
-                    {
-                        queryDb += " ORDER BY IsShared";
-                        queryDb = query.IsSortAscending ? queryDb : (queryDb += " DESC");
-                        isSorted = true;
-                    }
-                    else if(query.SortBy.ToLower() == "name")
-                    {
-                        queryDb += " ORDER BY Name";
-                        queryDb = query.IsSortAscending ? queryDb : (queryDb += " DESC");
-                        isSorted = true;
-                    }
+                    queryDb += QueryBuildExtensions.AppendSort(query.SortBy, query.IsSortAscending);
+                    isSorted = true;
                 }
 
+                //paging
                 if(query.Page != null && query.PageSize != null)
                 {
-                    if (!isSorted)
-                    {
-                        //need to add sort because offset requires order by clause
-                        queryDb += " ORDER BY Name";
-                    }
-                    queryDb += " OFFSET @PageSizeParam * (@PageParam - 1) ROWS FETCH NEXT @PageSizeParam ROWS ONLY";
+                    queryDb += QueryBuildExtensions.AppendPaging(isSorted, "Name");
                 }
 
                 var result = await conn.QueryAsync<Note>(queryDb, new { 
