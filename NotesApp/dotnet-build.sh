@@ -1,2 +1,2 @@
-dotnet restore
-dotnet build
+dotnet restore NotesApp
+dotnet build NotesApp
