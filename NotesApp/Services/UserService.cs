@@ -81,7 +81,7 @@ namespace NotesApp.Services
         public async Task<User> Create(User user, string password)
         {
             if (string.IsNullOrEmpty(password))
-                throw new DomainException("Password is invalid.");
+                throw new DomainException("Password is missing.");
 
             using (IDbConnection conn = Connection)
             {

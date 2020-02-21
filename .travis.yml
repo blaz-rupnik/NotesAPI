@@ -6,11 +6,11 @@ solution: ./NotesApp.sln
 install:
   - sudo apt-get install -qq dotnet-sdk-2.0.0
 before_script:
-  - chmod -R a+x ./NotesAPI/dotnet-build.sh
-  - chmod -R a+x ./NotesAPI/dotnet-publish.sh
+  - chmod -R a+x ./NotesApp/dotnet-build.sh
+  - chmod -R a+x ./NotesApp/dotnet-publish.sh
 script:
-  - ./NotesAPI/dotnet-build.sh
-  - ./NotesAPI/dotnet-publish.sh
+  - ./NotesApp/dotnet-build.sh
+  - ./NotesApp/dotnet-publish.sh
 notifications:
   email:
     on_success: never

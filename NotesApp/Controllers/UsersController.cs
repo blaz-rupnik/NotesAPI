@@ -49,7 +49,7 @@ namespace NotesApp.Controllers
             }
             catch(DomainException ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
 
         }

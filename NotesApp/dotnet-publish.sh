@@ -1,1 +1,1 @@
-dotnet publish ./NotesAPI -c Release -o ./bin/Docker
+dotnet publish ./NotesApp -c Release -o ./bin/Docker

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NotesApp.Controllers.Resources;
 using NotesApp.Models;
@@ -14,12 +13,10 @@ namespace NotesApp.Controllers
     [Route("[controller]")]
     public class NotesController : ControllerBase
     {
-        private readonly IMapper _mapper;
         private readonly INoteService _noteService;
 
-        public NotesController(IMapper mapper, INoteService noteService)
+        public NotesController(INoteService noteService)
         {
-            this._mapper = mapper;
             this._noteService = noteService;
         }
 
@@ -73,7 +70,7 @@ namespace NotesApp.Controllers
             try
             {
                 await _noteService.Delete(id,User.Identity.Name);
-                return Ok();
+                return NoContent();
             }
             catch (UnauthorizedAccessException)
             {

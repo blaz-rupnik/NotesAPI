@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NotesApp.Models;
 using NotesApp.Services;
@@ -13,12 +12,10 @@ namespace NotesApp.Controllers
     [Route("[controller]")]
     public class FoldersController : ControllerBase
     {
-        private readonly IMapper _mapper;
         private readonly IFolderService _folderService;
 
-        public FoldersController(IMapper mapper, IFolderService folderService)
+        public FoldersController(IFolderService folderService)
         {
-            this._mapper = mapper;
             this._folderService = folderService;
         }
 
@@ -70,7 +67,7 @@ namespace NotesApp.Controllers
             try
             {
                 await _folderService.Delete(id, User.Identity.Name);
-                return Ok();
+                return NoContent();
             }
             catch (UnauthorizedAccessException)
             {
