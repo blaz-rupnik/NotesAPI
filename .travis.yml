@@ -8,10 +8,12 @@ install:
 before_script:
   - chmod -R a+x ./NotesApp/dotnet-build.sh
   - chmod -R a+x ./NotesApp/dotnet-publish.sh
+  - chmod -R a+x ./NotesApp/dockerhub-publish.sh
 script:
   - ./NotesApp/dotnet-build.sh
   - ./NotesApp/dotnet-publish.sh
   - dotnet test ./Tests
+  - ./NotesApp/dockerhub-publish.sh
 notifications:
   email:
     on_success: never

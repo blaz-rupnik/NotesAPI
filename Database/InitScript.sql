@@ -1,5 +1,3 @@
-begin tran
-
 --codelists
 CREATE TABLE NoteType(
 	[Id] [uniqueidentifier] NOT NULL,
@@ -59,7 +57,3 @@ GO
 
 ALTER TABLE Notes ADD  DEFAULT (CONVERT([bit],(0))) FOR [IsShared];
 GO
-
-rollback tran
-
- 

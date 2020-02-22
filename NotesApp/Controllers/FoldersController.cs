@@ -29,7 +29,7 @@ namespace NotesApp.Controllers
         {
             try
             {
-                var folders = await _folderService.GetAll(query);
+                var folders = await _folderService.GetAll(query, User.Identity.Name);
                 _logger.LogInformation("Folders successfully retrieved");
                 return Ok(folders);
 
@@ -90,8 +90,8 @@ namespace NotesApp.Controllers
             }
             catch (UnauthorizedAccessException)
             {
-                _logger.LogError("User cannot update folder for another user.");
-                return Unauthorized("User cannot update folder for another user.");
+                _logger.LogError("User cannot update folder of another user.");
+                return Unauthorized("User cannot update folder of another user.");
             }
         }
 
@@ -107,8 +107,8 @@ namespace NotesApp.Controllers
             }
             catch (UnauthorizedAccessException)
             {
-                _logger.LogError("User cannot delete folder for another user");
-                return Unauthorized("User cannote delete folder for another user");
+                _logger.LogError("User cannot delete folder of another user");
+                return Unauthorized("User cannote delete folder of another user");
             }
             catch (DomainException ex)
             {

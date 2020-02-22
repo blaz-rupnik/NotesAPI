@@ -52,4 +52,3 @@ C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\bin\Debug\netcoreap
 C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\bin\Debug\netcoreapp3.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\obj\Debug\netcoreapp3.0\NotesApp.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\obj\Debug\netcoreapp3.0\NotesApp.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\NotesApp\obj\Debug\netcoreapp3.0\NotesApp.csprojAssemblyReference.cache

@@ -14,7 +14,7 @@ namespace NotesApp.Services
 {
     public interface IFolderService
     {
-        Task<IEnumerable<Folder>> GetAll(FolderQuery query);
+        Task<IEnumerable<Folder>> GetAll(FolderQuery query, string principalName);
         Task<Folder> GetById(Guid id, string principalName);
         Task<Folder> Create(Folder folder, string principalName);
         Task<Folder> Update(Guid id, Folder folder, string principalName);
@@ -38,16 +38,16 @@ namespace NotesApp.Services
             }
         }
 
-        public async Task<IEnumerable<Folder>> GetAll(FolderQuery query)
+        public async Task<IEnumerable<Folder>> GetAll(FolderQuery query, string principalName)
         {
             using (IDbConnection conn = Connection)
             {
                 conn.Open();
-                string dbQuery = "SELECT Id, Name, UserId FROM Folders";
+                string dbQuery = "SELECT Id, Name, UserId FROM Folders WHERE UserId = @UserIdParam";
 
                 //filtering
                 if (query.Name != null)
-                    dbQuery += QueryBuildExtensions.AppendFilter("Name", true, true);
+                    dbQuery += QueryBuildExtensions.AppendFilter("Name", true, false);
 
                 //sorting
                 var isSorted = false;
@@ -67,7 +67,8 @@ namespace NotesApp.Services
                 var result = await conn.QueryAsync<Folder>(dbQuery, new { 
                     NameParam = query.Name,
                     PageParam = query.Page,
-                    PageSizeParam = query.PageSize
+                    PageSizeParam = query.PageSize,
+                    UserIdParam = Guid.Parse(principalName)
                 });
                 return result;
             }

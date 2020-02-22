@@ -14,8 +14,8 @@ namespace NotesApp.Services
 {
     public interface INoteService
     {
-        Task<IEnumerable<Note>> GetAll(NoteQuery query, bool isAuthenticated);
-        Task<Note> GetById(Guid id, bool isAuthenticate, string principalName);
+        Task<IEnumerable<Note>> GetAll(NoteQuery query, bool isAuthenticated, string principalName);
+        Task<Note> GetById(Guid id, bool isAuthenticated, string principalName);
         Task<Note> Create(Note note, string principalName);
         Task<Note> Update(Guid id, Note note, string principalName);
         Task Delete(Guid id, string principalName);
@@ -39,7 +39,7 @@ namespace NotesApp.Services
             }
         }
 
-        public async Task<IEnumerable<Note>> GetAll(NoteQuery query, bool isAuthenticated)
+        public async Task<IEnumerable<Note>> GetAll(NoteQuery query, bool isAuthenticated, string principalName)
         {
             using (IDbConnection conn = Connection)
             {
@@ -47,20 +47,23 @@ namespace NotesApp.Services
 
                 string queryDb = "SELECT Id, Name, Content, FolderId, IsShared, NoteTypeId, UserId FROM Notes";
 
+                if (isAuthenticated)
+                {
+                    queryDb += " WHERE (IsShared = 1 OR UserId = @UserIdParam)";
+                }else
+                {
+                    queryDb += " WHERE IsShared = 1";
+                }
+
                 //filtering
-                bool isFirst = true; //flag for checking if filter was already added
                 if(query.IsShared != null)
-                {
-                    queryDb += QueryBuildExtensions.AppendFilter("IsShared", false, isFirst);
-                    isFirst = true;
-                }
+                    queryDb += QueryBuildExtensions.AppendFilter("IsShared", false, false);
+
                 if(query.FolderId != null)
-                {
-                    queryDb += QueryBuildExtensions.AppendFilter("FolderId", false, isFirst);
-                    isFirst = true;
-                }
+                    queryDb += QueryBuildExtensions.AppendFilter("FolderId", false, false);
+
                 if (!String.IsNullOrEmpty(query.Content))
-                    queryDb += QueryBuildExtensions.AppendFilter("Content", true, isFirst);
+                    queryDb += QueryBuildExtensions.AppendFilter("Content", true, false);
 
                 //sorting
                 bool isSorted = false;
@@ -82,7 +85,8 @@ namespace NotesApp.Services
                     PageParam = query.Page,
                     FolderIdParam = query.FolderId,
                     IsSharedParam = query.IsShared,
-                    ContentParam = query.Content
+                    ContentParam = query.Content,
+                    UserIdParam = !String.IsNullOrEmpty(principalName) ? Guid.Parse(principalName) : Guid.Empty
                 });
                 return result;
             }
