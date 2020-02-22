@@ -46,19 +46,19 @@ namespace NotesApp.Services
                 string queryDb = "SELECT Id, Name, Content, FolderId, IsShared, NoteTypeId, UserId FROM Notes";
 
                 //filtering
-                bool whereIncluded = false;
+                bool isFirst = true; //flag for checking if filter was already added
                 if(query.IsShared != null)
                 {
-                    queryDb += QueryBuildExtensions.AppendFilter("IsShared", false, whereIncluded);
-                    whereIncluded = true;
+                    queryDb += QueryBuildExtensions.AppendFilter("IsShared", false, isFirst);
+                    isFirst = true;
                 }
                 if(query.FolderId != null)
                 {
-                    queryDb += QueryBuildExtensions.AppendFilter("FolderId", false, whereIncluded);
-                    whereIncluded = true;
+                    queryDb += QueryBuildExtensions.AppendFilter("FolderId", false, isFirst);
+                    isFirst = true;
                 }
                 if (!String.IsNullOrEmpty(query.Content))
-                    queryDb += QueryBuildExtensions.AppendFilter("Content", true, whereIncluded);
+                    queryDb += QueryBuildExtensions.AppendFilter("Content", true, isFirst);
 
                 //sorting
                 bool isSorted = false;
@@ -95,6 +95,9 @@ namespace NotesApp.Services
                 conn.Open();
                 var result = await conn.QueryAsync<Note>(query, new { ID = id });
                 var note = result.FirstOrDefault();
+
+                if (note == null)
+                    throw new DomainException("Note not found");
 
                 Guid.TryParse(principalName, out Guid userId);
 

@@ -146,20 +146,30 @@ namespace NotesApp.Services
             using (IDbConnection conn = Connection)
             {
                 conn.Open();
-
-                //delete notes that are inside this folder
-                string noteQuery = "DELETE FROM Notes WHERE FolderId = @FolderIdParam";
-                await conn.QueryAsync<Folder>(noteQuery, new
+                var tx = conn.BeginTransaction();
+                try
                 {
-                    FolderIdParam = id
-                });
+                    //delete notes that are inside this folder
+                    string noteQuery = "DELETE FROM Notes WHERE FolderId = @FolderIdParam";
+                    await conn.QueryAsync<Folder>(noteQuery, new
+                    {
+                        FolderIdParam = id
+                    }, tx);
 
-                //delete folder
-                string query = "DELETE FROM Folders WHERE Id = @IdParam";
-                await conn.QueryAsync<Note>(query, new
+                    //delete folder
+                    string query = "DELETE FROM Folders WHERE Id = @IdParam";
+                    await conn.QueryAsync<Note>(query, new
+                    {
+                        IdParam = id
+                    }, tx);
+
+                    tx.Commit();
+                }
+                catch
                 {
-                    IdParam = id
-                });
+                    tx.Rollback();
+                    throw;
+                }
             }
         }
     }

@@ -11,6 +11,7 @@ before_script:
 script:
   - ./NotesApp/dotnet-build.sh
   - ./NotesApp/dotnet-publish.sh
+  - dotnet test ./Tests
 notifications:
   email:
     on_success: never

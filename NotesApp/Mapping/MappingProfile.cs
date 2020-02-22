@@ -12,12 +12,6 @@ namespace NotesApp.Mapping
     {
         public MappingProfile()
         {          
-            CreateMap<Folder, FolderResource>();
-            CreateMap<FolderResource, Folder>();
-
-            CreateMap<Note, NoteResource>();
-            CreateMap<NoteResource, Note>();
-
             CreateMap<User, UserResource>();
             CreateMap<UserAuthenticateResource, User>();
         }
