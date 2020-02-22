@@ -1,3 +1,9 @@
+CREATE DATABASE NotesDB;
+GO
+
+USE NotesDB;
+GO
+
 --codelists
 CREATE TABLE NoteType(
 	[Id] [uniqueidentifier] NOT NULL,

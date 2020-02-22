@@ -1,5 +1,11 @@
-version: "3.2"
+version: "3"
 services:
+  notes-api:
+    build: .
+    ports:
+      - "8080:5000"
+    depends_on:
+      - notes-db
   notes-db:
     container_name: notes-db
     image: microsoft/mssql-server-linux:2017-latest
