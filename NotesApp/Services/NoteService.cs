@@ -16,17 +16,19 @@ namespace NotesApp.Services
     {
         Task<IEnumerable<Note>> GetAll(NoteQuery query, bool isAuthenticated);
         Task<Note> GetById(Guid id, bool isAuthenticate, string principalName);
-        Task<Note> Create(Note note);
+        Task<Note> Create(Note note, string principalName);
         Task<Note> Update(Guid id, Note note, string principalName);
         Task Delete(Guid id, string principalName);
     }
     public class NoteService : INoteService
     {
         private readonly IConfiguration _config;
+        private readonly IFolderService _folderService;
 
-        public NoteService(IConfiguration config)
+        public NoteService(IConfiguration config, IFolderService folderService)
         {
             _config = config;
+            _folderService = folderService;
         }
 
         public IDbConnection Connection
@@ -97,7 +99,7 @@ namespace NotesApp.Services
                 var note = result.FirstOrDefault();
 
                 if (note == null)
-                    throw new DomainException("Note not found");
+                    return null;
 
                 Guid.TryParse(principalName, out Guid userId);
 
@@ -110,11 +112,21 @@ namespace NotesApp.Services
             }          
         }
 
-        public async Task<Note> Create(Note note)
+        public async Task<Note> Create(Note note, string principalName)
         {
+            //if creating inside folder, check that folder belongs to the user
+            if(note.FolderId != null)
+            {
+                //fails if folder does not belong to user
+                var folder = _folderService.GetById((Guid)note.FolderId, principalName);
+            }
+
+            if (note.UserId != Guid.Parse(principalName))
+                throw new UnauthorizedAccessException();
+
             using (IDbConnection conn = Connection)
             {
-                conn.Open();
+                conn.Open();             
                 string query = "INSERT INTO Notes (Id, Name, Content, FolderId, IsShared, NoteTypeId, UserId) values (" +
                     "@IdParam, @NameParam, @ContentParam, @FolderIdParam, @IsSharedParam, @NoteTypeIdParam, @UserIdParam)";
 

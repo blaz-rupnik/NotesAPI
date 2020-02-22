@@ -16,7 +16,7 @@ namespace NotesApp.Services
     {
         Task<IEnumerable<Folder>> GetAll(FolderQuery query);
         Task<Folder> GetById(Guid id, string principalName);
-        Task<Folder> Create(Folder folder);
+        Task<Folder> Create(Folder folder, string principalName);
         Task<Folder> Update(Guid id, Folder folder, string principalName);
         Task Delete(Guid id, string principalName);
     }
@@ -82,6 +82,9 @@ namespace NotesApp.Services
                 var result = await conn.QueryAsync<Folder>(query, new { ID = id });
                 var folder = result.FirstOrDefault();
 
+                if (folder == null)
+                    return null;
+
                 Guid.TryParse(principalName, out Guid userId);
 
                 if (userId == folder.UserId)
@@ -93,8 +96,12 @@ namespace NotesApp.Services
             }
         }
 
-        public async Task<Folder> Create(Folder folder)
+        public async Task<Folder> Create(Folder folder, string principalName)
         {
+            //check access
+            if (folder.UserId != Guid.Parse(principalName))
+                throw new UnauthorizedAccessException();
+
             using (IDbConnection conn = Connection)
             {
                 conn.Open();

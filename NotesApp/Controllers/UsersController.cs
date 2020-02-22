@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using NotesApp.Controllers.Resources;
@@ -24,16 +25,19 @@ namespace NotesApp.Controllers
         private readonly IMapper _mapper;
         private readonly AppSettings _appSettings;
         private IUserService _userService;
+        private readonly ILogger<UsersController> _logger;
 
         public UsersController(
             IMapper mapper,
             IOptions<AppSettings> appSettings,
-            IUserService userService
+            IUserService userService,
+            ILogger<UsersController> logger
             )
         {
             this._mapper = mapper;
             this._userService = userService;
             this._appSettings = appSettings.Value;
+            this._logger = logger;
         }
 
         [AllowAnonymous]
@@ -45,10 +49,12 @@ namespace NotesApp.Controllers
             try
             {
                 await _userService.Create(user, model.Password);
+                _logger.LogInformation($"User {model.Username} was created.");
                 return Ok();
             }
             catch(DomainException ex)
             {
+                _logger.LogError($"Error creating user. Error: {ex.Message}");
                 return BadRequest(ex.Message);
             }
 
@@ -61,7 +67,10 @@ namespace NotesApp.Controllers
             var user = await _userService.Authenticate(model.Username, model.Password);
 
             if (user == null)
-                return BadRequest(new { msg = "Username or password is incorrect" });
+            {
+                _logger.LogError($"Failed to authenticate user {model.Username}. Wrong or missing data.");
+                return BadRequest();
+            }
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = System.Text.Encoding.ASCII.GetBytes(_appSettings.Secret);
@@ -78,6 +87,7 @@ namespace NotesApp.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
 
+            _logger.LogInformation("User successfully authenticated.");
             return Ok(new
             {
                 Id = user.Id,
@@ -91,6 +101,7 @@ namespace NotesApp.Controllers
         {
             var users = await _userService.GetAll();
             var result = _mapper.Map<IEnumerable<UserResource>>(users);
+            _logger.LogInformation("Users successfully retrieved");
             return Ok(result);
         }
 
@@ -98,7 +109,15 @@ namespace NotesApp.Controllers
         public async Task<IActionResult> GetById(Guid id)
         {
             var user = await _userService.GetById(id);
+
+            if (user == null)
+            {
+                _logger.LogError($"User with id {id} not found.");
+                return NotFound();
+            }
+
             var model = _mapper.Map<UserResource>(user);
+            _logger.LogInformation($"User {user.Username} successfully retrieved");
             return Ok(model);
         }
     }

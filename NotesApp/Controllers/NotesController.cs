@@ -35,6 +35,10 @@ namespace NotesApp.Controllers
             try
             {
                 var note = await _noteService.GetById(id, User.Identity.IsAuthenticated, User.Identity.Name);
+
+                if (note == null)
+                    return NotFound();
+
                 return Ok(note);
             }
             catch(UnauthorizedAccessException)
@@ -46,8 +50,18 @@ namespace NotesApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Note model)
         {
-            var note = await _noteService.Create(model);
-            return Ok(note);
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            try
+            {
+                var note = await _noteService.Create(model, User.Identity.Name);
+                return Ok(note);
+
+            }catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
         }
 
         [HttpPut("{id}")]

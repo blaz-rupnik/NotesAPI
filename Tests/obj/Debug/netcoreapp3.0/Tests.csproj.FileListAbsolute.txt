@@ -128,3 +128,7 @@ C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\Tests\obj\Debug\netcoreapp3.
 C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\Tests\obj\Debug\netcoreapp3.0\Tests.csproj.CopyComplete
 C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\Tests\obj\Debug\netcoreapp3.0\Tests.dll
 C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\Tests\obj\Debug\netcoreapp3.0\Tests.pdb
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\Tests\bin\Debug\netcoreapp3.0\Microsoft.OpenApi.dll
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\Tests\bin\Debug\netcoreapp3.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\Tests\bin\Debug\netcoreapp3.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\Tests\bin\Debug\netcoreapp3.0\Swashbuckle.AspNetCore.SwaggerUI.dll

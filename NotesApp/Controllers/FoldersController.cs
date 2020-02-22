@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using NotesApp.Controllers.QueryParams;
+using NotesApp.Helpers;
 using NotesApp.Models;
 using NotesApp.Services;
 using System;
@@ -14,17 +16,28 @@ namespace NotesApp.Controllers
     public class FoldersController : ControllerBase
     {
         private readonly IFolderService _folderService;
+        private readonly ILogger<FoldersController> _logger;
 
-        public FoldersController(IFolderService folderService)
+        public FoldersController(IFolderService folderService, ILogger<FoldersController> logger)
         {
             this._folderService = folderService;
+            this._logger = logger;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] FolderQuery query)
         {
-            var folders = await _folderService.GetAll(query);
-            return Ok(folders);
+            try
+            {
+                var folders = await _folderService.GetAll(query);
+                _logger.LogInformation("Folders successfully retrieved");
+                return Ok(folders);
+
+            }catch (Exception ex)
+            {
+                _logger.LogError($"Error retrieving all users. Error: {ex.Message}");
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
@@ -33,19 +46,37 @@ namespace NotesApp.Controllers
             try
             {
                 var folder = await _folderService.GetById(id, User.Identity.Name);
+
+                if (folder == null)
+                {
+                    _logger.LogError($"Folder with id {id} not found");
+                    return NotFound();
+                }
+
+                _logger.LogInformation($"Folder {folder.Name} successfully retrieved");
                 return Ok(folder);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                _logger.LogError($"Error retrieving folder. Error: {ex.Message}");
+                return BadRequest(ex.Message);
             }
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Folder model)
         {
-            var folder = await _folderService.Create(model);
-            return Ok(folder);
+            try
+            {
+                var folder = await _folderService.Create(model, User.Identity.Name);
+                _logger.LogInformation($"Folder {folder.Name} successfully created");
+                return Ok(folder);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                _logger.LogError("User cannot create folder for another user.");
+                return Unauthorized("User cannot create folder for another user.");
+            }
         }
 
         [HttpPut("{id}")]
@@ -54,11 +85,13 @@ namespace NotesApp.Controllers
             try
             {
                 var updatedFolder = await _folderService.Update(id, model, User.Identity.Name);
+                _logger.LogInformation($"Folder {updatedFolder.Name} successfully updated");
                 return Ok(updatedFolder);
             }
             catch (UnauthorizedAccessException)
             {
-                return Unauthorized();
+                _logger.LogError("User cannot update folder for another user.");
+                return Unauthorized("User cannot update folder for another user.");
             }
         }
 
@@ -68,11 +101,19 @@ namespace NotesApp.Controllers
             try
             {
                 await _folderService.Delete(id, User.Identity.Name);
+
+                _logger.LogInformation("Folder successfully deleted.");
                 return NoContent();
             }
             catch (UnauthorizedAccessException)
             {
-                return Unauthorized();
+                _logger.LogError("User cannot delete folder for another user");
+                return Unauthorized("User cannote delete folder for another user");
+            }
+            catch (DomainException ex)
+            {
+                _logger.LogError("Folder not found");
+                return NotFound(ex);
             }
         }
     }

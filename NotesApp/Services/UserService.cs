@@ -40,7 +40,7 @@ namespace NotesApp.Services
         {
             using (IDbConnection conn = Connection)
             {
-                string query = "SELECT Id, PasswordHash, PasswordSalt, Username FROM Users";
+                string query = "SELECT Id, Username FROM Users";
                 conn.Open();
                 var result = await conn.QueryAsync<User>(query);
                 return result;
@@ -51,7 +51,7 @@ namespace NotesApp.Services
         {
             using(IDbConnection conn = Connection)
             {
-                string query = "SELECT Id, PasswordHash, PasswordSalt, Username FROM Users WHERE Id = @ID";
+                string query = "SELECT Id, Username FROM Users WHERE Id = @ID";
                 conn.Open();
                 var result = await conn.QueryAsync<User>(query, new { ID = id });
                 return result.FirstOrDefault();
