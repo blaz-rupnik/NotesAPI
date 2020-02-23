@@ -1,5 +1,0 @@
-C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\LoggerService\bin\Debug\netcoreapp3.0\LoggerService.deps.json
-C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\LoggerService\bin\Debug\netcoreapp3.0\LoggerService.dll
-C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\LoggerService\obj\Debug\netcoreapp3.0\LoggerService.csprojAssemblyReference.cache
-C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\LoggerService\obj\Debug\netcoreapp3.0\LoggerService.AssemblyInfoInputs.cache
-C:\Users\blazr\OneDrive\Namizje\Playground\NotesAPI\LoggerService\obj\Debug\netcoreapp3.0\LoggerService.AssemblyInfo.cs

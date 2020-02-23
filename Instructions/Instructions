@@ -1,22 +1,35 @@
-1. git clone the project locally
+Some business logic rules:
+    - user create/authenticate allow no authentication and
+     notes get GetAll/GetById also but response depends on note data (IsShared)
+    - created note will be private by default if not specified in request
+    - note type is regular text by default if not specified in request
+    - note SortBy supports: "Name", "IsShared", folder SortBy supports: "Name"
+    - note folderId is not required but the userId is required, also if 
+    folderId is provided it must be owned by same user as note will be
+    - authenticated user sees his notes and those that are IsShared,
+    he can also only modify notes/folders he owns
+    - deleting folder also deletes all notes linked to this folder
+
+Local testing:
+
+1. git clone the project locally or download it
 
 2. navigate to root folder that also includes docker-compose.yml file
 
-3. run docker command: docker-compose up 
+3. run docker command: docker-compose up -d
 //This will also download sql server image and required nuget packages so it might take a few minutes
 
 4. to create schema and insert data you can use sqlcmd command in Powershell/Bash
 https://docs.microsoft.com/en-us/sql/tools/sqlcmd-utility?view=sql-server-ver15
 
-    - Navigate to Database folder (cd Database).
-    - run command: sqlcmd -S localhost -U sa -P Geslo123! -i InitScript.sql //creates schema and codelists
-    - run command: sqlcmd -S localhost -U sa -P Geslo123! -i SeedDataScript.sql //seeds data
+    - run command: sqlcmd -S localhost -U sa -P Geslo123! -i ./Database/InitScript.sql //creates schema and codelists
+    - run command: sqlcmd -S localhost -U sa -P Geslo123! -i ./Database/SeedDataScript.sql //seeds data
     //in case connection fails try <your ip>,1433 instead of localhost
 
 5. You can now browse api by going to http://localhost:8080/swagger
 It includes all api calls that can be used.
 
-How to authenticate yourself: 
+How to authenticate yourself (usernames and passwords are in Credentials file or create your own user): 
 
 /users/register with username and password. If response is Ok 200, you can call next /users/authenticate
 with your username and password. If they are correct you will get a token in response. You can then
