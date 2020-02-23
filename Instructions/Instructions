@@ -35,4 +35,7 @@ How to authenticate yourself (usernames and passwords are in Credentials file or
 with your username and password. If they are correct you will get a token in response. You can then
 copy the token to Authorize -> value.
 
+If you wish to see controller logs:
+run command: docker logs <container>
+
 
