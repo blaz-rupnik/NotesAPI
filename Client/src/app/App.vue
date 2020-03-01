@@ -1,5 +1,12 @@
 <template>
     <div>
+        <nav class="navbar navbar-expand navbar-dark bg-dark">
+            <div class="navbar-nav">
+                <router-link v-if="currentUser" to="/" class="nav-item nav-link">Home</router-link>
+                <router-link v-if="!currentUser" to="/register" class="nav-item nav-link">Register</router-link>
+                <a v-if="currentUser" @click="logout" class="nav-item nav-link">Logout</a>
+            </div>
+        </nav>
         <div v-if="currentUser">
             <h2>{{ currentUser }}</h2>
         </div>
