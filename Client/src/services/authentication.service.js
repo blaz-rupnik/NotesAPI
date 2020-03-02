@@ -15,7 +15,7 @@ export const authenticationService = {
 };
 
 function login(username, password){
-    return fetch(`${config.apiUrl}/users/authenticate`, requestOptions.post({ username, password }))
+    return fetch(`${config.externalApiUrl}/users/authenticate`, requestOptions.post({ username, password }))
     .then(handleResponse)
         .then(user => {
             localStorage.setItem('currentUser', JSON.stringify(user));
@@ -26,7 +26,7 @@ function login(username, password){
 }
 
 function register(username, password){
-    return fetch(`${config.apiUrl}/users/register`, requestOptions.post({ username, password }))
+    return fetch(`${config.externalApiUrl}/users/register`, requestOptions.post({ username, password }))
         .then(handleResponse);
 }
 

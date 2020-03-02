@@ -7,9 +7,6 @@
                 <a v-if="currentUser" @click="logout" class="nav-item nav-link">Logout</a>
             </div>
         </nav>
-        <div v-if="currentUser">
-            <h2>{{ currentUser }}</h2>
-        </div>
         <div class="jumbotron">
             <div class="container">
                 <router-view></router-view>

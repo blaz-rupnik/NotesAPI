@@ -8,11 +8,11 @@ export const userService = {
 };
 
 function getAll(){
-    return fetch(`${config.dev.apiUrl}/users`, requestOptions.get())
+    return fetch(`${config.externalApiUrl}/users`, requestOptions.get())
     .then(handleResponse);
 }
 
 function getById(id){
-    return fetch(`${config.dev.apiUrl}/users/${id}`, requestOptions.get())
+    return fetch(`${config.externalApiUrl}/users/${id}`, requestOptions.get())
     .then(handleResponse);
 }
