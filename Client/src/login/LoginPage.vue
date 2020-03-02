@@ -65,7 +65,10 @@ export default {
             this.loading = true;
             authenticationService.login(this.username, this.password)
                 .then(
-                    user => router.push(this.returnUrl),
+                    user => {
+                        router.push(this.returnUrl);
+                        console.log(user);
+                    },
                     error => {
                         this.error = error;
                         this.loading = false;

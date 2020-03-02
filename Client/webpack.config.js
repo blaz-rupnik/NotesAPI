@@ -5,7 +5,7 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin')
 module.exports = {
     mode: 'development',
     resolve: {
-        extensions: ['.js', '.vue']
+        extensions: ['.js', '.vue', '.css']
     },
     module: {
         rules: [
@@ -16,11 +16,15 @@ module.exports = {
             {
                 test: /\.js?$/,
                 loader: 'babel-loader'
+            },
+            {
+                test: /\.css$/,
+                use: [
+                  'vue-style-loader',
+                  'css-loader'
+                ]
             }
         ]
-    },
-    resolve: {
-        extensions: ['.js', '.vue']
     },
     plugins: [
         new VueLoaderPlugin(),
